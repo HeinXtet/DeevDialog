@@ -5,4 +5,5 @@
     <color name="colorAccent">#14b1e1</color>
     <color name="title_text_color">#ffffff</color>
     <color name="message_color">#d6bebe</color>
+    <color name="progress_color">#ea3838</color>
 </resources>

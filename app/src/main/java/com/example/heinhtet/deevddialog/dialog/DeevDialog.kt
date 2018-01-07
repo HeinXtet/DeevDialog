@@ -1,21 +1,14 @@
 package com.example.heinhtet.deevddialog.dialog
 
-import android.view.Window.FEATURE_NO_TITLE
 import android.os.Bundle
 import android.app.Activity
 import android.app.Dialog
-import android.content.Context
-import android.os.Message
-import android.util.Log
 import android.view.View
 import android.view.Window
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
-import com.example.heinhtet.deevddialog.MainActivity
 import com.example.heinhtet.deevddialog.R
-import kotlinx.android.synthetic.main.a.*
-import org.w3c.dom.Text
+import kotlinx.android.synthetic.main.message_dialog_layout.*
 
 
 /**
@@ -25,7 +18,7 @@ class DeevDialog
 constructor(var c: Activity, var type: Int?, var message: String?, var positiveText: String?,
             var negativeText: String?,
             click: positiveListener)
-    : Dialog(c, R.style.PauseDialog), android.view.View.OnClickListener {
+    : Dialog(c, R.style.fadeDialogAnimation), android.view.View.OnClickListener {
     var d: Dialog? = null
     lateinit var yes: Button
     lateinit var cancel: Button
@@ -49,7 +42,7 @@ constructor(var c: Activity, var type: Int?, var message: String?, var positiveT
                 setViewForLoading()
             }
             else -> {
-                setContentView(R.layout.a)
+                setContentView(R.layout.message_dialog_layout)
                 setViewForSimple()
             }
         }

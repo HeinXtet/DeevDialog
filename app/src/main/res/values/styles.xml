@@ -10,14 +10,30 @@
 
     </style>
 
-    <style name="PauseDialog" parent="@android:style/Theme.DeviceDefault.Dialog">
-        <item name="android:windowAnimationStyle">@style/PauseDialogAnimation</item>
+    <!--push-->
+
+    <style name="pushDialogAnimation" parent="android:Theme.DeviceDefault.Dialog">
+        <item name="android:windowAnimationStyle">@style/pushDialogAnimation.Style</item>
     </style>
 
-    <style name="PauseDialogAnimation">
+    <style name="pushDialogAnimation.Style">
         <item name="android:windowEnterAnimation">@anim/push_in</item>
         <item name="android:windowExitAnimation">@anim/push_out</item>
     </style>
+
+
+    <!--fade-->
+
+    <style name="fadeDialogAnimation" parent="android:Theme.DeviceDefault.Dialog">
+        <item name="android:windowAnimationStyle">@style/fadeDialogAnimation.Style</item>
+    </style>
+
+    <style name="fadeDialogAnimation.Style">
+        <item name="android:windowEnterAnimation">@anim/fade_in</item>
+        <item name="android:windowExitAnimation">@anim/fade_out</item>
+    </style>
+
+    <!--pulse-->
 
     <style name="pulseDialogAnimation" parent="android:Theme.DeviceDefault.Dialog">
         <item name="android:windowAnimationStyle">@style/pulseDialogAnimation.Style</item>
@@ -27,6 +43,7 @@
         <item name="android:windowEnterAnimation">@anim/pulse_modal_in</item>
         <item name="android:windowExitAnimation">@anim/pulse_modal_out</item>
     </style>
+
 
 
 </resources>

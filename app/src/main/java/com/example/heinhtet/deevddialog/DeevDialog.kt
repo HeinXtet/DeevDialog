@@ -2,13 +2,21 @@ package com.example.heinhtet.deevddialog
 
 import android.app.Activity
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
-import android.support.annotation.LayoutRes
 import android.view.View
 import android.view.Window
-import kotlinx.android.synthetic.main.a.*
+import kotlinx.android.synthetic.main.message_dialog_layout.*
 import kotlinx.android.synthetic.main.progress_dialog_view.*
-import android.graphics.LightingColorFilter
+import android.graphics.PorterDuff
+import android.support.v4.content.ContextCompat
+import android.support.v4.graphics.drawable.DrawableCompat
+import android.graphics.drawable.Drawable
+import android.os.Build
+import android.support.annotation.LayoutRes
+import android.util.Log
+import android.view.LayoutInflater
+import android.widget.ProgressBar
 
 
 /**
@@ -25,27 +33,42 @@ class DeevDialog {
         private var mNegativeText: String? = null
         private var mMessage: String? = null
         private var mTitle: String? = null
+        private var cancelable: Boolean? = true
+        private var customLayout: Int? = null
 
 
         private lateinit var mPositiveClick: onPositiveClickListener
         private lateinit var mNegativeClick: onNegativeClickListener
         lateinit var mDialog: DeevDialog
+        lateinit var mActivity: Context
+        private lateinit var customViewRenderring: CustomViewRenderingListener
 
 
         // theme
-        var bgColorRes: Int? = null
-        var titleColorRes: Int? = null
-        var messageColorRes: Int? = null
-        var mPColor: Int? = null
-        var mNColor: Int? = null
+        private var bgColorRes: Int? = null
+        private var titleColorRes: Int? = null
+        private var messageColorRes: Int? = null
+        private var mPColor: Int? = null
+        private var mNColor: Int? = null
+        private var isDarkTheme: Boolean? = null
+        private var mProgressColor: Int? = null
 
 
         var PROGRESS = 3232
         var MESSAGE = 233
+        var CUSTOM = 2342
 
         var PULSE_ANIMATION = R.style.pulseDialogAnimation
+        var PUSH_ANIMATION = R.style.pushDialogAnimation
+        var FADE_ANIMATION = R.style.fadeDialogAnimation
 
         class DeevDialog(activity: Activity, animation: Int) : Dialog(activity, animation), View.OnClickListener {
+
+            fun DeevDialog(activity: Activity, animation: Int, layout: Int) {
+
+            }
+
+
             override fun onClick(p0: View?) {
                 when (p0?.id) {
                     R.id.cancel_action -> {
@@ -62,6 +85,17 @@ class DeevDialog {
                 requestWindowFeature(Window.FEATURE_NO_TITLE)
                 mDialog = this
                 style()
+                checkCancelable()
+            }
+
+            private fun checkCancelable() {
+                if (cancelable != null) {
+                    if (cancelable!!) {
+                        this.setCancelable(true)
+                    } else {
+                        this.setCancelable(false)
+                    }
+                }
             }
 
             private fun style() {
@@ -71,10 +105,22 @@ class DeevDialog {
                         setViewForProgress()
                     }
                     MESSAGE -> {
-                        setLayout(R.layout.a)
+                        setLayout(R.layout.message_dialog_layout)
                         setViewForMessage()
                     }
+                    CUSTOM -> {
+                        if (customLayout != null) {
+                            setLayout(customLayout!!)
+                            setViewForCustomLayout()
+                        } else {
+                            Log.i("DeevDialog", "need to set setCustomLayout")
+                        }
+                    }
                 }
+            }
+
+            private fun setViewForCustomLayout() {
+                customViewRenderring.bindView(mDialog)
             }
 
             private fun setViewForMessage() {
@@ -124,6 +170,15 @@ class DeevDialog {
                 } else {
                     loading_tv.text = "Loading...."
                 }
+                if (mProgressColor != null) {
+                    changeProgressBarLoadingColor(loading)
+                }
+                if (mTitle != null) {
+                    progress_title_tv.text = mTitle
+                } else {
+                    progress_title_tv.text = "Loading..."
+
+                }
             }
 
             private fun setLayout(layout: Int) {
@@ -140,10 +195,14 @@ class DeevDialog {
                 return this
             }
 
+            fun setCancelableDeev(flag: Boolean): DeevDialog {
+                cancelable = flag
+                return this
+            }
 
-            fun setStyle(deevDialogStyle: Int, message: String?): DeevDialog {
+
+            fun setStyle(deevDialogStyle: Int): DeevDialog {
                 dialogStyle = deevDialogStyle
-                mMessage = message
                 return this
             }
 
@@ -184,7 +243,17 @@ class DeevDialog {
             }
 
             fun setTitleColorRes(tColor: Int): DeevDialog {
-                titleColorRes = titleColorRes
+                titleColorRes = tColor
+                return this
+            }
+
+            fun setCustomView(@LayoutRes layout: Int): DeevDialog {
+                customLayout = layout
+                return this
+            }
+
+            fun setCustomViewCallback(renderingListener: CustomViewRenderingListener): DeevDialog {
+                customViewRenderring = renderingListener
                 return this
             }
 
@@ -193,29 +262,53 @@ class DeevDialog {
                 return this
             }
 
+            fun setProgressLoadingColorRes(proColor: Int): DeevDialog {
+                mProgressColor = proColor
+                return this
+            }
+
+            fun setDarkTheme(darkFlag: Boolean): DeevDialog {
+                isDarkTheme = darkFlag
+                return this
+            }
+
 
         }
 
         fun into(activity: Activity, animation: Int?): DeevDialog {
+            mActivity = activity
             if (animation != null) {
                 return DeevDialog(activity, animation)
             } else {
-                return Companion.DeevDialog(activity, R.style.PauseDialog)
+                return Companion.DeevDialog(activity, R.style.fadeDialogAnimation)
             }
         }
 
-        fun dissmiss() {
+
+        fun dismiss() {
             if (mDialog.isShowing) {
                 setDefault()
                 mDialog.dismiss()
             }
         }
 
-        fun setDefault() {
+        fun changeProgressBarLoadingColor(mProgressBar: ProgressBar) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                val wrapDrawable = DrawableCompat.wrap(mProgressBar.getIndeterminateDrawable())
+                DrawableCompat.setTint(wrapDrawable, ContextCompat.getColor(mActivity, mProgressColor!!))
+                mProgressBar.indeterminateDrawable = DrawableCompat.unwrap<Drawable>(wrapDrawable)
+            } else {
+                mProgressBar.indeterminateDrawable.setColorFilter(ContextCompat.getColor(mActivity, mProgressColor!!), PorterDuff.Mode.SRC_IN)
+            }
+        }
+
+        private fun setDefault() {
             mNegativeText = null
             mMessage = null
             mPositiveText = null
             mTitle = null
+            cancelable = true
+            mProgressColor = null
         }
 
         interface onPositiveClickListener {
@@ -224,6 +317,10 @@ class DeevDialog {
 
         interface onNegativeClickListener {
             fun onClick(dialog: DeevDialog)
+        }
+
+        interface CustomViewRenderingListener {
+            fun bindView(dialog: DeevDialog)
         }
 
 
