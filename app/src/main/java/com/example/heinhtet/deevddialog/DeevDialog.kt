@@ -24,10 +24,7 @@ import android.widget.ProgressBar
  */
 
 class DeevDialog {
-
-
-    companion object {
-
+    companion object Instance {
         private var mPositiveText: String? = null
         private var dialogStyle: Int = 0
         private var mNegativeText: String? = null
@@ -280,7 +277,7 @@ class DeevDialog {
             if (animation != null) {
                 return DeevDialog(activity, animation)
             } else {
-                return Companion.DeevDialog(activity, R.style.fadeDialogAnimation)
+                return Instance.DeevDialog(activity, R.style.fadeDialogAnimation)
             }
         }
 

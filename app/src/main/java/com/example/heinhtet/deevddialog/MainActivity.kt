@@ -9,12 +9,12 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
-    lateinit var mDialog: DeevDialog.Companion
+    lateinit var mDialog: DeevDialog.Instance
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        mDialog = DeevDialog.Companion
+        mDialog = DeevDialog.Instance
 
 
         progress_dialog.setOnClickListener {
@@ -28,8 +28,8 @@ class MainActivity : AppCompatActivity() {
             mDialog.into(this@MainActivity, DeevDialog.PUSH_ANIMATION)
                     .setStyle(DeevDialog.CUSTOM)
                     .setCustomView(R.layout.dialog_layout)
-                    .setCustomViewCallback(object : DeevDialog.Companion.CustomViewRenderingListener {
-                        override fun bindView(dialog: DeevDialog.Companion.DeevDialog) {
+                    .setCustomViewCallback(object : DeevDialog.Instance.CustomViewRenderingListener {
+                        override fun bindView(dialog: DeevDialog.Instance.DeevDialog) {
                             var z = dialog.findViewById<TextView>(R.id.txt_dia)
                             z.text = "This is custom DeevDialog"
                             var ok = dialog.findViewById<Button>(R.id.btn_yes)
@@ -40,14 +40,14 @@ class MainActivity : AppCompatActivity() {
         message_dialog.setOnClickListener {
             mDialog.into(this@MainActivity, DeevDialog.PULSE_ANIMATION).
                     setStyle(DeevDialog.MESSAGE).
-                    setOnPositiveListener(object : DeevDialog.Companion.onPositiveClickListener {
-                        override fun onClick(dialog: DeevDialog.Companion.DeevDialog) {
+                    setOnPositiveListener(object : DeevDialog.Instance.onPositiveClickListener {
+                        override fun onClick(dialog: DeevDialog.Instance.DeevDialog) {
                             mDialog.dismiss()
                             Toast.makeText(this@MainActivity, "adfadf", Toast.LENGTH_SHORT).show()
                         }
                     })
-                    .setOnNegativeClickListener(object : DeevDialog.Companion.onNegativeClickListener {
-                        override fun onClick(ada: DeevDialog.Companion.DeevDialog) {
+                    .setOnNegativeClickListener(object : DeevDialog.Instance.onNegativeClickListener {
+                        override fun onClick(ada: DeevDialog.Instance.DeevDialog) {
                             mDialog.dismiss()
                         }
                     })
