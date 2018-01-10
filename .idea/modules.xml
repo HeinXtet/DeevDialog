@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/DeevdDialog.iml" filepath="$PROJECT_DIR$/DeevdDialog.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/deevdialog/deevdialog.iml" filepath="$PROJECT_DIR$/deevdialog/deevdialog.iml" />
     </modules>
   </component>
 </project>

@@ -1,4 +1,4 @@
-package com.example.heinhtet.deevddialog.dialog
+package com.heinhtet.deevd.deevdialog.dialog
 
 /**
  * Created by heinhtet on 1/10/18.

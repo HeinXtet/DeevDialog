@@ -1,14 +1,11 @@
-package com.example.heinhtet.deevddialog.dialog
+package com.heinhtet.deevd.deevdialog.dialog
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.Window
-import kotlinx.android.synthetic.main.message_dialog_layout.*
-import kotlinx.android.synthetic.main.progress_dialog_view.*
 import android.graphics.PorterDuff
 import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.drawable.DrawableCompat
@@ -17,7 +14,9 @@ import android.os.Build
 import android.support.annotation.LayoutRes
 import android.util.Log
 import android.widget.ProgressBar
-import com.example.heinhtet.deevddialog.R
+import com.heinhtet.deevd.deevdialog.R
+import kotlinx.android.synthetic.main.message_dialog_layout.*
+import kotlinx.android.synthetic.main.progress_dialog_view.*
 
 
 /**
@@ -50,6 +49,9 @@ class DeevDialog {
         private var mNColor: Int? = null
         private var isDarkTheme: Boolean = false
         private var mProgressColor: Int? = null
+
+
+        //viewGroup
 
 
         class DeevDialog(activity: Activity, animation: Int) : Dialog(activity, animation), View.OnClickListener {

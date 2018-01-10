@@ -1,6 +1,7 @@
-package com.example.heinhtet.deevddialog.dialog
+package com.heinhtet.deevd.deevdialog.dialog
 
-import com.example.heinhtet.deevddialog.R
+import com.heinhtet.deevd.deevdialog.R
+
 
 /**
  * Created by heinhtet on 1/10/18.
