@@ -27,7 +27,7 @@ This is simple dialog android open source library witten with kotlin.
    ```kotlin
 
    dependencies {
-           compile 'com.github.HeinXtet:DeevDialog:0.1.1'
+   	       compile 'com.github.HeinXtet:DeevDialog:0.1.2'
    	}
    ```
 
