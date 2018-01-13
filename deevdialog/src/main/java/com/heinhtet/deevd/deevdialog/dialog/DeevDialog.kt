@@ -16,6 +16,7 @@ import android.os.Build
 import android.support.annotation.LayoutRes
 import android.util.Log
 import android.widget.ProgressBar
+import android.widget.Toast
 import com.heinhtet.deevd.deevdialog.R
 import kotlinx.android.synthetic.main.message_dialog_layout.*
 import kotlinx.android.synthetic.main.progress_dialog_view.*
@@ -36,11 +37,11 @@ class DeevDialog {
         private var customLayout: Int? = null
 
 
-        private lateinit var mPositiveClick: DeevDialogCallback.onPositiveClickListener
-        private lateinit var mNegativeClick: DeevDialogCallback.onNegativeClickListener
+        private var mPositiveClick: DeevDialogCallback.onPositiveClickListener? = null
+        private var mNegativeClick: DeevDialogCallback.onNegativeClickListener? = null
         private var mDialog: DeevDialog? = null
         private lateinit var mActivity: Context
-        private lateinit var customViewRenderring: DeevDialogCallback.CustomViewRenderingListener
+        private var customViewRenderring: DeevDialogCallback.CustomViewRenderingListener? = null
 
 
         // theme
@@ -49,7 +50,7 @@ class DeevDialog {
         private var messageColorRes: Int? = null
         private var mPColor: Int? = null
         private var mNColor: Int? = null
-        private var isDarkTheme: Boolean = false
+        private var isDarkTheme: Boolean? = null
         private var mProgressColor: Int? = null
 
 
@@ -61,10 +62,21 @@ class DeevDialog {
             override fun onClick(p0: View?) {
                 when (p0?.id) {
                     R.id.cancel_action -> {
-                        mNegativeClick.onClick(this)
+
+                        if (mNegativeClick != null) {
+                            mNegativeClick?.onClick(this)
+                        } else {
+                            this.dismiss()
+                        }
+
                     }
                     R.id.ok_btn -> {
-                        mPositiveClick.onClick(this)
+                        if (mPositiveClick != null) {
+                            mPositiveClick?.onClick(this)
+
+                        } else {
+                            this.dismiss()
+                        }
                     }
                 }
             }
@@ -80,7 +92,14 @@ class DeevDialog {
             private fun getDarkTheme(type: Int) {
                 when (type) {
                     DeevDialogStyle.PROGRESS -> {
-                        progress_layout.setBackgroundColor(ContextCompat.getColor(mActivity, R.color.dark_color))
+
+                        if (bgColorRes != null) {
+                            progress_layout.setBackgroundColor(ContextCompat.getColor(mActivity, bgColorRes!!))
+
+                        } else {
+                            progress_layout.setBackgroundColor(Color.BLACK)
+                        }
+
                         if (titleColorRes != null) {
                             progress_title_tv.setTextColor(ContextCompat.getColor(mActivity, titleColorRes!!))
                         } else {
@@ -95,7 +114,14 @@ class DeevDialog {
                         }
                     }
                     DeevDialogStyle.MESSAGE -> {
-                        message_dialog_layout.setBackgroundColor(ContextCompat.getColor(context, R.color.dark_color))
+
+                        if (bgColorRes == null) {
+                            message_dialog_layout.setBackgroundColor(Color.BLACK)
+
+                        } else {
+                            message_dialog_layout.setBackgroundColor(ContextCompat.getColor(context, bgColorRes!!))
+
+                        }
                         if (titleColorRes == null) {
                             title_tv.setTextColor(Color.WHITE)
                         } else {
@@ -124,6 +150,18 @@ class DeevDialog {
                     }
 
                 }
+            }
+
+            private fun getColorState(): ColorStateList {
+                val states = arrayOf(intArrayOf(android.R.attr.state_enabled), // enabled
+                        intArrayOf(-android.R.attr.state_enabled), // disabled
+                        intArrayOf(-android.R.attr.state_checked), // unchecked
+                        intArrayOf(android.R.attr.state_pressed)  // pressed
+                )
+
+                val colors = intArrayOf(Color.BLACK, Color.RED, Color.GREEN, Color.BLUE)
+
+                return ColorStateList(states, colors)
             }
 
 
@@ -160,7 +198,10 @@ class DeevDialog {
 
             private fun setViewForCustomLayout() {
                 if (mDialog != null) {
-                    customViewRenderring.onBind(mDialog!!)
+                    if (customViewRenderring != null) {
+                        customViewRenderring?.onBind(mDialog!!)
+
+                    }
 
                 }
             }
@@ -325,8 +366,20 @@ class DeevDialog {
                 this.show()
             }
 
+            override fun onDetachedFromWindow() {
+                super.onDetachedFromWindow()
+                setDefault()
+            }
 
-            private fun isDarkTheme(): Boolean = isDarkTheme
+
+            private fun isDarkTheme(): Boolean {
+                if (isDarkTheme != null) {
+                    return isDarkTheme!!
+
+                } else {
+                    return false
+                }
+            }
 
 
         }
@@ -372,7 +425,10 @@ class DeevDialog {
             mNColor = null
             messageColorRes = null
             titleColorRes = null
-            isDarkTheme = false
+            isDarkTheme = null
+            mPositiveClick = null
+            mNegativeClick = null
+            customViewRenderring = null
         }
 
         fun isShowing(): Boolean {

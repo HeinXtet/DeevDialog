@@ -24,8 +24,11 @@ class MainActivity : AppCompatActivity() {
         progress_dialog.setOnClickListener {
             mDialog.
                     into(this@MainActivity, DeevDialogAnimation.FADE_ANIMATION).
-                    setStyle(DeevDialogStyle.PROGRESS).setTitleText("Fatching...").
-                    setMessage("My Loading...").setProgressLoadingColorRes(R.color.progress_color).make()
+                    setDarkTheme(true).
+                    setStyle(DeevDialogStyle.PROGRESS).
+                    setTitleText("Fatching...").
+                    setMessage("My Loading...").
+                    setProgressLoadingColorRes(R.color.progress_color).make()
         }
 
         custom_dialog.setOnClickListener {
@@ -53,32 +56,49 @@ class MainActivity : AppCompatActivity() {
                     }).make()
         }
         message_dialog.setOnClickListener {
-            mDialog.into(this@MainActivity, DeevDialogAnimation.PULSE_ANIMATION).
-                    setStyle(DeevDialogStyle.MESSAGE).
-                    setOnPositiveListener(object : DeevDialogCallback.onPositiveClickListener {
-                        override fun onClick(dialog: DeevDialog.Instance.DeevDialog) {
-                            mDialog.release()
-                            Toast.makeText(this@MainActivity, "click positive action", Toast.LENGTH_SHORT).show()
-                        }
-                    })
-                    .setOnNegativeClickListener(object : DeevDialogCallback.onNegativeClickListener {
-                        override fun onClick(dialog: DeevDialog.Instance.DeevDialog) {
-                            Toast.makeText(this@MainActivity, "click negative  action", Toast.LENGTH_SHORT).show()
-                            mDialog.release()
-                        }
-                    })
-                    .setDarkTheme(true)
-                    .setMessage("Hello this is DeevDialog ..")
-                    .setBackgroundColorRes(R.color.dark_color)
-                    .setPositiveTextColorRes(R.color.title_text_color)
-                    .setNegativeTextColorRes(R.color.title_text_color)
-                    .setMessageTextColorRes(R.color.title_text_color)
-                    .setTitleColorRes(R.color.colorAccent)
+            //            mDialog.into(this@MainActivity, DeevDialogAnimation.PULSE_ANIMATION).
+//                    setStyle(DeevDialogStyle.MESSAGE).
+//                    setOnPositiveListener(object : DeevDialogCallback.onPositiveClickListener {
+//                        override fun onClick(dialog: DeevDialog.Instance.DeevDialog) {
+//                            mDialog.release()
+//                            Toast.makeText(this@MainActivity, "click positive action", Toast.LENGTH_SHORT).show()
+//                        }
+//                    })
+//                    .setOnNegativeClickListener(object : DeevDialogCallback.onNegativeClickListener {
+//                        override fun onClick(dialog: DeevDialog.Instance.DeevD
+// ialog) {
+//                            Toast.makeText(this@MainActivity, "click negative  action", Toast.LENGTH_SHORT).show()
+//                            mDialog.release()
+//                        }
+//                    })
+//                    .setDarkTheme(true)
+//                    .setMessage("Hello this is DeevDialog ..")
+//                    .setBackgroundColorRes(R.color.dark_color)
+//                    .setPositiveTextColorRes(R.color.title_text_color)
+//                    .setNegativeTextColorRes(R.color.title_text_color)
+//                    .setMessageTextColorRes(R.color.title_text_color)
+//                    .setTitleColorRes(R.color.colorAccent)
+//                    .setTitleText("DeevDialog")
+//                    .setPositiveText("click ok")
+//                    .setNegativeText("click cancel")
+//                    .setCancelableDeev(false).
+//                    make()
+
+
+            DeevDialog.into(this, DeevDialogAnimation.FADE_ANIMATION)
+                    .setMessage("Hello")
                     .setTitleText("DeevDialog")
-                    .setPositiveText("click ok")
-                    .setNegativeText("click cancel")
-                    .setCancelableDeev(false).
-                    make()
+                    .setStyle(DeevDialogStyle.MESSAGE)
+                    .setPositiveText("ok")
+                    .setDarkTheme(true)
+                    .setOnPositiveListener(object : DeevDialogCallback.onPositiveClickListener {
+                        override fun onClick(deevDialog: DeevDialog.Instance.DeevDialog) {
+                            Toast.makeText(this@MainActivity, "click ok", Toast.LENGTH_SHORT).show()
+                            deevDialog.dismiss()
+                        }
+                    })
+                    .setNegativeText("cancel")
+                    .make()
 
         }
     }
