@@ -3,6 +3,8 @@ package com.heinhtet.deevd.deevdialog.dialog
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.Window
@@ -36,7 +38,7 @@ class DeevDialog {
 
         private lateinit var mPositiveClick: DeevDialogCallback.onPositiveClickListener
         private lateinit var mNegativeClick: DeevDialogCallback.onNegativeClickListener
-        private lateinit var mDialog: DeevDialog
+        private var mDialog: DeevDialog? = null
         private lateinit var mActivity: Context
         private lateinit var customViewRenderring: DeevDialogCallback.CustomViewRenderingListener
 
@@ -59,10 +61,10 @@ class DeevDialog {
             override fun onClick(p0: View?) {
                 when (p0?.id) {
                     R.id.cancel_action -> {
-                        mPositiveClick.onClick(this)
+                        mNegativeClick.onClick(this)
                     }
                     R.id.ok_btn -> {
-                        mNegativeClick.onClick(this)
+                        mPositiveClick.onClick(this)
                     }
                 }
             }
@@ -75,18 +77,55 @@ class DeevDialog {
                 checkCancelable()
             }
 
-            override fun onDetachedFromWindow() {
-                super.onDetachedFromWindow()
-                Log.i("onDetached", "")
+            private fun getDarkTheme(type: Int) {
+                when (type) {
+                    DeevDialogStyle.PROGRESS -> {
+                        progress_layout.setBackgroundColor(ContextCompat.getColor(mActivity, R.color.dark_color))
+                        if (titleColorRes != null) {
+                            progress_title_tv.setTextColor(ContextCompat.getColor(mActivity, titleColorRes!!))
+                        } else {
+                            progress_title_tv.setTextColor(ContextCompat.getColor(mActivity, R.color.title_text_color))
+                        }
+
+                        if (messageColorRes != null) {
+                            loading_tv.setTextColor(ContextCompat.getColor(mActivity, messageColorRes!!))
+
+                        } else {
+                            loading_tv.setTextColor(ContextCompat.getColor(mActivity, R.color.title_text_color))
+                        }
+                    }
+                    DeevDialogStyle.MESSAGE -> {
+                        message_dialog_layout.setBackgroundColor(ContextCompat.getColor(context, R.color.dark_color))
+                        if (titleColorRes == null) {
+                            title_tv.setTextColor(Color.WHITE)
+                        } else {
+                            title_tv.setTextColor(ContextCompat.getColor(mActivity, titleColorRes!!))
+                        }
+
+                        if (messageColorRes == null) {
+                            text_dialog.setTextColor(ContextCompat.getColor(mActivity, R.color.title_text_color))
+
+                        } else {
+                            text_dialog.setTextColor(ContextCompat.getColor(mActivity, messageColorRes!!))
+                        }
+
+                        if (mPColor == null) {
+                            ok_btn.setTextColor(ContextCompat.getColor(mActivity, R.color.title_text_color))
+                        } else {
+                            ok_btn.setTextColor(ContextCompat.getColor(mActivity, mPColor!!))
+                        }
+
+                        if (mNColor == null) {
+                            cancel_action.setTextColor(ContextCompat.getColor(mActivity, R.color.title_text_color))
+
+                        } else {
+                            cancel_action.setTextColor(ContextCompat.getColor(mActivity, mNColor!!))
+                        }
+                    }
+
+                }
             }
 
-
-            private fun getDarkTheme() {
-                bgColorRes = R.color.dark_color
-                titleColorRes = R.color.title_text_color
-                mPColor = android.R.color.white
-                mNColor = android.R.color.white
-            }
 
             private fun checkCancelable() {
                 if (cancelable != null) {
@@ -105,7 +144,7 @@ class DeevDialog {
                         setViewForProgress()
                     }
                     DeevDialogStyle.MESSAGE -> {
-                        setLayout(R.layout.message_dialog_layout)
+                        setLayout(R.layout.message_dialog_view)
                         setViewForMessage()
                     }
                     DeevDialogStyle.CUSTOM -> {
@@ -120,13 +159,16 @@ class DeevDialog {
             }
 
             private fun setViewForCustomLayout() {
-                customViewRenderring.onBind(mDialog)
+                if (mDialog != null) {
+                    customViewRenderring.onBind(mDialog!!)
+
+                }
             }
 
             private fun setViewForMessage() {
 
                 if (isDarkTheme()) {
-                    getDarkTheme()
+                    getDarkTheme(DeevDialogStyle.MESSAGE)
                 } else {
                     checkTheme()
                 }
@@ -151,20 +193,20 @@ class DeevDialog {
 
             private fun checkTheme() {
                 if (bgColorRes != null) {
-                    message_dialog_layout.setBackgroundResource(bgColorRes!!)
+                    message_dialog_layout.setBackgroundColor(mActivity.resources.getColor(bgColorRes!!))
                 }
                 if (titleColorRes != null) {
-                    title_tv.setTextColor(titleColorRes!!)
+                    title_tv.setTextColor(mActivity.resources.getColor(titleColorRes!!))
                 }
                 if (messageColorRes != null) {
-                    text_dialog.setTextColor(messageColorRes!!)
+                    text_dialog.setTextColor(mActivity.resources.getColor(messageColorRes!!))
                 }
 
                 if (mPColor != null) {
-                    ok_btn.setTextColor(mPColor!!)
+                    ok_btn.setTextColor(mActivity.resources.getColor(mPColor!!))
                 }
                 if (mNColor != null) {
-                    cancel_action.setTextColor(mNColor!!)
+                    cancel_action.setTextColor(mActivity.resources.getColor(mNColor!!))
                 }
             }
 
@@ -183,7 +225,7 @@ class DeevDialog {
                     progress_title_tv.text = "Loading..."
                 }
                 if (isDarkTheme()) {
-                    getDarkTheme()
+                    getDarkTheme(DeevDialogStyle.PROGRESS)
                 }
             }
 
@@ -298,16 +340,18 @@ class DeevDialog {
             }
         }
 
-
         fun release() {
-            if (mDialog.isShowing) {
-                setDefault()
-                Log.i("deevDialog", "dismiss")
-                mDialog.dismiss()
+            if (mDialog != null) {
+                if (mDialog!!.isShowing) {
+                    setDefault()
+                    Log.i("deevDialog", "dismiss")
+                    mDialog!!.dismiss()
+                }
             }
+
         }
 
-        fun changeProgressBarLoadingColor(mProgressBar: ProgressBar) {
+        private fun changeProgressBarLoadingColor(mProgressBar: ProgressBar) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 val wrapDrawable = DrawableCompat.wrap(mProgressBar.getIndeterminateDrawable())
                 DrawableCompat.setTint(wrapDrawable, ContextCompat.getColor(mActivity, mProgressColor!!))
@@ -324,10 +368,20 @@ class DeevDialog {
             mTitle = null
             cancelable = true
             mProgressColor = null
+            mPColor = null
+            mNColor = null
+            messageColorRes = null
+            titleColorRes = null
+            isDarkTheme = false
         }
 
         fun isShowing(): Boolean {
-            return mDialog.isShowing()
+            if (mDialog != null) {
+                return mDialog!!.isShowing()
+
+            } else {
+                return false
+            }
         }
     }
 }
