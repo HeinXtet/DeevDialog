@@ -1,6 +1,6 @@
 ## DeevDialog
 
-This is simple dialog android open source library witten with kotlin.
+This is simple android dialog  open source library witten with kotlin.
 
 
 
